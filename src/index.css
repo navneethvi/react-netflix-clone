@@ -38,7 +38,6 @@ body {
 /* Banner */
 
 .banner {
-    background-image: url("https://c4.wallpaperflare.com/wallpaper/452/290/449/tv-game-of-thrones-jon-snow-kit-harington-wallpaper-preview.jpg");
     background-size: cover;
     height: 448px;
     width: 100%;
@@ -116,5 +115,10 @@ body {
 
 .poster-img {
     max-height: 250px;
+    margin-right: 10px;
+}
+
+.small-poster-img {
+    max-height: 160px;
     margin-right: 10px;
 }

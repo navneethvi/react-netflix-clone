@@ -1,17 +1,60 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "../axios";
+import { API_KEY, imageUrl } from "../constants/constants";
 
 function Banner() {
-  return <div className="banner">
-    <div className="content">
-        <h1 className="title">Movie Name</h1>
+  const [movie, setMovie] = useState(null);
+  const [movieIndex, setMovieIndex] = useState(0);
+  const [movies, setMovies] = useState([]);
+
+  useEffect(() => {
+    const fetchData = () => {
+      axios
+        .get(`trending/all/week?api_key=${API_KEY}&language=en-US`)
+        .then((response) => {
+          const results = response.data.results[0];
+          setMovie(results);
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    };
+
+    fetchData();
+
+    const intervalId = setInterval(() => {
+      setMovieIndex((prevIndex) => (prevIndex + 1) % 20);
+    }, 5000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [movieIndex]);
+
+  useEffect(() => {
+    if (movies.length > 0) {
+      setMovies(movies[movieIndex]);
+    }
+  }, [movieIndex, movies]);
+
+  return (
+    <div
+      className="banner"
+      style={{
+        backgroundImage: `url(${movie ? imageUrl + movie.backdrop_path : ""})`,
+      }}
+    >
+      <div className="content">
+        <h1 className="title">{movie ? movie.title : ""}</h1>
         <div className="banner-button">
-            <button className="button">Play</button>
-            <button className="button">My list</button>
+          <button className="button">Play</button>
+          <button className="button">My list</button>
         </div>
-        <h1 className="description">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</h1>
+        <h1 className="description">{movie ? movie.overview : ""}</h1>
+      </div>
+      <div className="fade-botton"></div>
     </div>
-    <div className="fade-botton"></div>
-  </div>;
+  );
 }
 
 export default Banner;
