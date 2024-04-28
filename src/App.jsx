@@ -11,8 +11,8 @@ function App() {
       <Banner/>
       <RowPost url={originals} title="Netflix Originals"/>
       <RowPost url={action} title="Action" isSmall />
-      <RowPost url={horror} title="Netflix Originals"/>
-      <RowPost url={romance} title="Action" isSmall />
+      <RowPost url={horror} title="Horror"/>
+      <RowPost url={romance} title="Romance" isSmall />
     </div>
   )
 }
