@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "../axios";
 import { API_KEY, imageUrl } from "../constants/constants";
+import Shimmer from "./Shimmer";
 
 function Banner() {
   const [movie, setMovie] = useState(null);
   const [movieIndex, setMovieIndex] = useState(0);
   const [movies, setMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const fetchData = () => {
@@ -14,9 +16,11 @@ function Banner() {
         .then((response) => {
           const results = response.data.results[0];
           setMovie(results);
+          setIsLoading(false)
         })
         .catch((error) => {
           console.log(error.message);
+          setIsLoading(false)
         });
     };
 
@@ -44,17 +48,24 @@ function Banner() {
         backgroundImage: `url(${movie ? imageUrl + movie.backdrop_path : ""})`,
       }}
     >
-      <div className="content">
-        <h1 className="title">{movie ? movie.title : ""}</h1>
-        <div className="banner-button">
-          <button className="button">Play</button>
-          <button className="button">My list</button>
-        </div>
-        <h1 className="description">{movie ? movie.overview : ""}</h1>
-      </div>
-      <div className="fade-botton"></div>
+      {isLoading ? (
+        <Shimmer />  
+      ) : (
+        <>
+          <div className="content">
+            <h1 className="title">{movie ? movie.title : ""}</h1>
+            <div className="banner-button">
+              <button className="button">Play</button>
+              <button className="button">My list</button>
+            </div>
+            <h1 className="description">{movie ? movie.overview : ""}</h1>
+          </div>
+          <div className="fade-botton"></div>
+        </>
+      )}
     </div>
   );
+  
 }
 
 export default Banner;

@@ -3,10 +3,12 @@ import { imageUrl } from "../constants/constants";
 import { API_KEY } from "../constants/constants";
 import axios from "../axios";
 import Youtube from "react-youtube"
+import Shimmer from "./Shimmer";
 
 function RowPost(props) {
   const [movies, setMovies] = useState([]);
   const [urlId, setUrlId] = useState("")
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     axios
@@ -15,9 +17,11 @@ function RowPost(props) {
         console.log(response.data.results);
         const movie = response.data.results;
         setMovies(movie);
+        setIsLoading(false)
       })
       .catch((error) => {
         console.log(error.message);
+        setIsLoading(false)
       });
   }, [props.url]);
 
@@ -47,18 +51,22 @@ function RowPost(props) {
   return (
     <div className="row">
       <h2>{props.title}</h2>
-      <div className="posters">
-        {movies.map((movie) => (
-          <img
-            key={movie.id}
-            onClick={()=>handleMovieClick(movie.id)}
-            className={props.isSmall ? "small-poster-img" : "poster-img"}
-            src={movie ? imageUrl + movie.backdrop_path : ""}
-            alt="Poster"
-          />
-        ))}
-      </div>
-      {urlId && <Youtube opts={opts} videoId={urlId.key}/>}
+      {isLoading ? (
+        <Shimmer />  
+      ) : (
+        <div className="posters">
+          {movies.map((movie) => (
+            <img
+              key={movie.id}
+              onClick={() => handleMovieClick(movie.id)}
+              className={props.isSmall ? "small-poster-img" : "poster-img"}
+              src={movie ? imageUrl + movie.backdrop_path : ""}
+              alt="Poster"
+            />
+          ))}
+        </div>
+      )}
+      {urlId && <Youtube opts={opts} videoId={urlId.key} />}
     </div>
   );
 }
